@@ -2,250 +2,170 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Match-3 с регистрацией и выбором аватара</title>
+<title>Регистрация и вход с аватаром</title>
 <style>
   body {
-    margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: #34495e; color: white;
-    display: flex; justify-content: center; align-items: center;
-    height: 100vh;
-    overflow: hidden;
-  }
-  .screen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100vw; height: 100vh;
-    background: #2c3e50;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  .active { display: flex; }
-  h1,h2,h3 { margin: 10px 0; }
-
-  input[type=text], input[type=password] {
-    font-size: 16px; padding: 8px; margin: 6px 0;
-    border-radius: 6px; border: none; width: 250px;
-    box-sizing: border-box;
-  }
-  button {
-    margin-top: 12px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    background-color: #27ae60;
+    font-family: Arial, sans-serif;
+    background: #222;
     color: white;
-    transition: background-color 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
   }
-  button:hover {
-    background-color: #2ecc71;
+  #login-screen {
+    background: #333;
+    padding: 20px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
   }
-
   #avatar-selection img {
-    width: 80px; margin: 10px; cursor: pointer;
+    width: 60px;
+    margin: 10px 5px;
     border-radius: 50%;
     border: 3px solid transparent;
-    transition: border-color 0.3s;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
   }
   #avatar-selection img.selected {
-    border-color: #f1c40f;
+    border-color: gold;
   }
-
-  nav {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-  nav button {
-    background-color: #2980b9;
-  }
-  nav button:hover {
-    background-color: #3498db;
-  }
-
-  #game {
-    display: grid;
-    grid-template-columns: repeat(8, 50px);
-    grid-gap: 3px;
-    user-select: none;
-  }
-  .tile {
-    width: 50px; height: 50px;
-    background-color: #ecf0f1;
+  input[type=text], input[type=password] {
+    width: 90%;
+    padding: 8px;
+    margin: 8px 0;
     border-radius: 6px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 30px;
+    border: none;
+    font-size: 16px;
+  }
+  button {
+    margin: 10px 5px 0 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background: #27ae60;
+    color: white;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    color: #222;
   }
-  .tile.matched {
-    animation: disappear 0.4s forwards;
+  button:hover {
+    background: #2ecc71;
   }
-  @keyframes disappear {
-    to { transform: scale(0); opacity: 0; }
-  }
-  .tile.selected {
-    box-shadow: 0 0 10px 3px #f1c40f;
-  }
-
-  #hud {
-    margin: 15px 0;
-    font-size: 18px;
-  }
-  #player-info {
-    display: flex; align-items: center; gap: 12px;
-    font-size: 20px;
-    user-select: none;
-  }
-  #player-info img {
-    width: 50px; height: 50px; border-radius: 50%;
-    animation: avatarAnim 3s infinite alternate;
-  }
-  @keyframes avatarAnim {
-    0% { transform: rotate(-5deg); }
-    100% { transform: rotate(5deg); }
-  }
-
-  #coins-container {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 22px;
-    margin-top: 8px;
-    user-select: none;
-  }
-  #coins-icon {
-    width: 28px; height: 28px;
-    background: radial-gradient(circle at center, gold 40%, #b8860b 90%);
-    border-radius: 50%;
-    box-shadow: 0 0 5px 2px gold;
-    animation: coinPulse 1.5s infinite;
-  }
-  @keyframes coinPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-  }
-
-  .shop-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    max-width: 600px;
-  }
-  .shop-item {
-    background: #34495e;
-    border-radius: 10px;
-    padding: 12px;
-    width: 140px;
-    text-align: center;
-    cursor: pointer;
-    box-shadow: 0 0 10px 0 transparent;
-    transition: box-shadow 0.3s;
-  }
-  .shop-item:hover {
-    box-shadow: 0 0 12px 3px #f1c40f;
-  }
-  .shop-item img {
-    width: 70px;
-    border-radius: 50%;
-    margin-bottom: 8px;
-  }
-  .shop-item .price {
-    font-weight: bold;
-    color: #f1c40f;
-    margin-top: 6px;
-  }
-  .shop-item button {
-    margin-top: 8px;
-    background-color: #e67e22;
-  }
-  .shop-item button:hover {
-    background-color: #d35400;
-  }
-
-  #account-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-  #account-info img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    animation: avatarAnim 3s infinite alternate;
-  }
-  #account-info .nickname {
-    font-size: 24px;
+  #message {
+    margin-top: 12px;
+    height: 20px;
+    color: #e74c3c;
     font-weight: bold;
   }
-
-  #settings label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 18px;
-  }
-  #settings input[type=checkbox] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-  }
-
-  .nickname.animated {
-    animation: glowText 3s infinite alternate;
-  }
-  @keyframes glowText {
-    0% { text-shadow: 0 0 3px #f1c40f; color: #f39c12; }
-    100% { text-shadow: 0 0 10px #f39c12; color: #f1c40f; }
-  }
-
 </style>
 </head>
 <body>
 
-<!-- Экран входа/регистрации -->
-<div id="login-screen" class="screen active">
-  <h1>Вход / Регистрация</h1>
+<div id="login-screen">
+  <h2>Регистрация / Вход</h2>
   <div id="avatar-selection">
     <img src="https://img.icons8.com/emoji/96/cat-face.png" alt="Cat" data-avatar="cat" />
     <img src="https://img.icons8.com/emoji/96/dog-face.png" alt="Dog" data-avatar="dog" />
     <img src="https://img.icons8.com/emoji/96/bear-face.png" alt="Bear" data-avatar="bear" />
     <img src="https://img.icons8.com/emoji/96/fox-face.png" alt="Fox" data-avatar="fox" />
   </div>
-  <input type="text" id="login-nickname" placeholder="Никнейм" autocomplete="off" />
-  <input type="password" id="login-password" placeholder="Пароль" autocomplete="off" />
-  <button id="login-button">Войти</button>
-  <button id="register-button">Зарегистрироваться</button>
-  <p id="login-message" style="color:#e74c3c; margin-top:10px;"></p>
-</div>
-
-<!-- Главное меню -->
-<div id="main-menu" class="screen">
-  <h1>Match-3 Game</h1>
-  <nav>
-    <button id="btn-play">Играть</button>
-    <button id="btn-shop">Магазин</button>
-    <button id="btn-account">Аккаунт</button>
-    <button id="btn-settings">Настройки</button>
-    <button id="btn-logout">Выйти</button>
-  </nav>
-  <div id="welcome-msg"></div>
-  <div id="coins-container"><div id="coins-icon"></div><div id="coins-count">0</div></div>
-</div>
-
-<!-- Игра -->
-<div id="game-screen" class="screen">
-  <div id="hud">
-    <div id="player-info"></div>
-    <div>Ходы: <span id="moves-left">20</span> | Очки: <span id="score">0</span></div>
-    <div id="coins-container" style="margin-top:4px;">
-      <div id="coins-icon"></div><div id="coins-count-game">0</div>
-    </div>
+  <input id="nickname" type="text" placeholder="Никнейм" autocomplete="off" />
+  <input id="password" type="password" placeholder="Пароль" autocomplete="off" />
+  <div>
+    <button id="register-btn">Зарегистрироваться</button>
+    <button id="login-btn">Войти</button>
   </div>
+  <div id="message"></div>
+</div>
+
+<script>
+  const avatarImgs = document.querySelectorAll('#avatar-selection img');
+  let selectedAvatar = null;
+  const messageEl = document.getElementById('message');
+  const nicknameInput = document.getElementById('nickname');
+  const passwordInput = document.getElementById('password');
+
+  avatarImgs.forEach(img => {
+    img.addEventListener('click', () => {
+      avatarImgs.forEach(i => i.classList.remove('selected'));
+      img.classList.add('selected');
+      selectedAvatar = img.getAttribute('data-avatar');
+      messageEl.textContent = '';
+    });
+  });
+
+  function loadUsers() {
+    return JSON.parse(localStorage.getItem('users') || '{}');
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  document.getElementById('register-btn').addEventListener('click', () => {
+    const nick = nicknameInput.value.trim();
+    const pass = passwordInput.value.trim();
+
+    if (!selectedAvatar) {
+      messageEl.textContent = 'Пожалуйста, выберите аватар.';
+      return;
+    }
+    if (!nick) {
+      messageEl.textContent = 'Введите никнейм.';
+      return;
+    }
+    if (!pass) {
+      messageEl.textContent = 'Введите пароль.';
+      return;
+    }
+
+    let users = loadUsers();
+    if (users[nick]) {
+      messageEl.textContent = 'Пользователь с таким ником уже существует.';
+      return;
+    }
+
+    users[nick] = { password: pass, avatar: selectedAvatar, coins: 0, score: 0, themes: [] };
+    saveUsers(users);
+    messageEl.style.color = 'lightgreen';
+    messageEl.textContent = 'Регистрация успешна! Теперь можно войти.';
+  });
+
+  document.getElementById('login-btn').addEventListener('click', () => {
+    const nick = nicknameInput.value.trim();
+    const pass = passwordInput.value.trim();
+    let users = loadUsers();
+
+    if (!nick || !pass) {
+      messageEl.style.color = '#e74c3c';
+      messageEl.textContent = 'Введите ник и пароль.';
+      return;
+    }
+
+    if (!users[nick]) {
+      messageEl.style.color = '#e74c3c';
+      messageEl.textContent = 'Пользователь не найден.';
+      return;
+    }
+
+    if (users[nick].password !== pass) {
+      messageEl.style.color = '#e74c3c';
+      messageEl.textContent = 'Неверный пароль.';
+      return;
+    }
+
+    // Успешный вход — тут можно переходить в игру, пока просто сообщение
+    messageEl.style.color = 'lightgreen';
+    messageEl.textContent = 'Вход успешен! Добро пожаловать, ' + nick + '.';
+
+    // Сохраняем текущего пользователя
+    localStorage.setItem('currentUser', nick);
+
+    // Можно сделать переход к следующему экрану, например:
+    // location.href = 'game.html'; или показать блок с игрой и скрыть экран входа
+  });
+</script>
+
+</body>
+</html>
