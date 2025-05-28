@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Выбор аватара</title>
+<style>
+  #avatar-selection img {
+    width: 80px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    transition: border-color 0.3s;
+  }
+  #avatar-selection img.selected {
+    border-color: #f1c40f; /* Желтый бордер */
+  }
+</style>
+</head>
+<body>
+
+<div id="avatar-selection">
+  <img src="https://img.icons8.com/emoji/96/cat-face.png" alt="Cat" data-avatar="cat" />
+  <img src="https://img.icons8.com/emoji/96/dog-face.png" alt="Dog" data-avatar="dog" />
+  <img src="https://img.icons8.com/emoji/96/bear-face.png" alt="Bear" />
+  <img src="https://img.icons8.com/emoji/96/fox-face.png" alt="Fox" />
+</div>
+
+<script>
+  const avatarImgs = document.querySelectorAll('#avatar-selection img');
+  let selectedAvatar = null;
+
+  avatarImgs.forEach(img => {
+    img.addEventListener('click', () => {
+      avatarImgs.forEach(i => i.classList.remove('selected'));
+      img.classList.add('selected');
+      selectedAvatar = img.getAttribute('data-avatar');
+      console.log('Выбран аватар:', selectedAvatar);
+    });
+  });
+</script>
+
+</body>
+</html>
