@@ -1,64 +1,72 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<title>Регистрация и вход с аватаром</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #222;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  #login-screen {
-    background: #333;
-    padding: 20px;
-    border-radius: 12px;
-    width: 320px;
-    text-align: center;
-  }
-  #avatar-selection img {
-    width: 60px;
-    margin: 10px 5px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-  }
-  #avatar-selection img.selected {
-    border-color: gold;
-  }
-  input[type=text], input[type=password] {
-    width: 90%;
-    padding: 8px;
-    margin: 8px 0;
-    border-radius: 6px;
-    border: none;
-    font-size: 16px;
-  }
-  button {
-    margin: 10px 5px 0 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    background: #27ae60;
-    color: white;
-    cursor: pointer;
-  }
-  button:hover {
-    background: #2ecc71;
-  }
-  #message {
-    margin-top: 12px;
-    height: 20px;
-    color: #e74c3c;
-    font-weight: bold;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>Вход и Регистрация</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #222;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #login-screen {
+      background: #333;
+      padding: 20px;
+      border-radius: 12px;
+      width: 320px;
+      text-align: center;
+    }
+
+    #avatar-selection img {
+      width: 60px;
+      margin: 10px 5px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+    }
+
+    #avatar-selection img.selected {
+      border-color: gold;
+    }
+
+    input[type=text], input[type=password] {
+      width: 90%;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      margin: 10px 5px 0 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #27ae60;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2ecc71;
+    }
+
+    #message {
+      margin-top: 12px;
+      height: 20px;
+      color: #e74c3c;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
@@ -126,7 +134,13 @@
       return;
     }
 
-    users[nick] = { password: pass, avatar: selectedAvatar, coins: 0, score: 0, themes: [] };
+    users[nick] = {
+      password: pass,
+      avatar: selectedAvatar,
+      coins: 0,
+      score: 0,
+      themes: []
+    };
     saveUsers(users);
     messageEl.style.color = 'lightgreen';
     messageEl.textContent = 'Регистрация успешна! Теперь можно войти.';
@@ -155,15 +169,15 @@
       return;
     }
 
-    // Успешный вход — тут можно переходить в игру, пока просто сообщение
     messageEl.style.color = 'lightgreen';
     messageEl.textContent = 'Вход успешен! Добро пожаловать, ' + nick + '.';
 
-    // Сохраняем текущего пользователя
     localStorage.setItem('currentUser', nick);
 
-    // Можно сделать переход к следующему экрану, например:
-    // location.href = 'game.html'; или показать блок с игрой и скрыть экран входа
+    // Переход в игру
+    setTimeout(() => {
+      window.location.href = 'game.html';
+    }, 1000);
   });
 </script>
 
