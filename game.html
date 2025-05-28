@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Match 3 Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(8, 50px);
+      grid-gap: 4px;
+    }
+    .tile {
+      width: 50px;
+      height: 50px;
+      background: #3498db;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    #header {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h2>Match 3 Game</h2>
+    <p id="player-name">Загрузка...</p>
+  </div>
+
+  <div id="game-board"></div>
+
+  <script>
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+      alert('Вы не вошли в систему!');
+      location.href = 'index.html';
+    } else {
+      document.getElementById('player-name').textContent = 'Игрок: ' + currentUser;
+    }
+
+    const emojis = ['🍎','🍋','🍇','🍓','🍊','🍒'];
+    const board = document.getElementById('game-board');
+
+    function createBoard() {
+      for (let i = 0; i < 64; i++) {
+        const tile = document.createElement('div');
+        tile.classList.add('tile');
+        tile.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        board.appendChild(tile);
+      }
+    }
+
+    createBoard();
+  </script>
+</body>
+</html>
