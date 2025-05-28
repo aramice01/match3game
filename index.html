@@ -1,0 +1,212 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Match-3 Game</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #34495e;
+      margin: 0;
+      padding: 0;
+      color: white;
+    }
+    .screen {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .active {
+      display: flex;
+    }
+    #avatar-selection img {
+      width: 80px;
+      margin: 10px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      border-radius: 50%;
+    }
+    #avatar-selection img.selected {
+      border-color: #f1c40f;
+    }
+    #game {
+      display: grid;
+      grid-template-columns: repeat(8, 50px);
+      grid-gap: 2px;
+      margin: 10px auto;
+    }
+    .tile {
+      width: 50px;
+      height: 50px;
+      background-color: #ecf0f1;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+    .tile.matched {
+      transform: scale(0);
+    }
+    #hud {
+      text-align: center;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background-color: #27ae60;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="start-screen" class="screen active">
+    <h1>Выбери аватар и имя</h1>
+    <div id="avatar-selection">
+      <img src="https://img.icons8.com/emoji/2x/cat-face.png" alt="Cat">
+      <img src="https://img.icons8.com/emoji/2x/dog-face.png" alt="Dog">
+      <img src="https://img.icons8.com/emoji/2x/bear-face.png" alt="Bear">
+    </div>
+    <input type="text" id="player-name" placeholder="Введите имя" />
+    <button onclick="startGame()">Играть</button>
+  </div>  <div id="game-screen" class="screen">
+    <div id="hud">
+      <h2 id="player-info"></h2>
+      <p>Ходы: <span id="moves-left">20</span> | Очки: <span id="score">0</span></p>
+    </div>
+    <div id="game"></div>
+    <button onclick="restartGame()">Заново</button>
+  </div>  <script>
+    const tileTypes = ['🔴','🟢','🔵','🟡','🟣','🟠'];
+    const gameSize = 8;
+    let tiles = [], firstTile = null;
+    let score = 0, moves = 20;
+    const gameBoard = document.getElementById('game');
+    const scoreDisplay = document.getElementById('score');
+    const movesDisplay = document.getElementById('moves-left');
+    const playerInfo = document.getElementById('player-info');
+    let selectedAvatar = '';
+
+    document.querySelectorAll('#avatar-selection img').forEach(img => {
+      img.addEventListener('click', () => {
+        document.querySelectorAll('#avatar-selection img').forEach(i => i.classList.remove('selected'));
+        img.classList.add('selected');
+        selectedAvatar = img.outerHTML;
+      });
+    });
+
+    function startGame() {
+      const name = document.getElementById('player-name').value.trim();
+      if (!name || !selectedAvatar) {
+        alert('Введите имя и выберите аватар.');
+        return;
+      }
+      document.getElementById('start-screen').classList.remove('active');
+      document.getElementById('game-screen').classList.add('active');
+      playerInfo.innerHTML = `${selectedAvatar} <strong>${name}</strong>`;
+      createBoard();
+    }
+
+    function createBoard() {
+      score = 0;
+      moves = 20;
+      updateHUD();
+      tiles = [];
+      gameBoard.innerHTML = '';
+      for (let i = 0; i < gameSize * gameSize; i++) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.dataset.index = i;
+        tile.textContent = getRandomTile();
+        tile.addEventListener('click', handleTileClick);
+        gameBoard.appendChild(tile);
+        tiles.push(tile);
+      }
+    }
+
+    function updateHUD() {
+      scoreDisplay.textContent = score;
+      movesDisplay.textContent = moves;
+    }
+
+    function getRandomTile() {
+      return tileTypes[Math.floor(Math.random() * tileTypes.length)];
+    }
+
+    function handleTileClick(e) {
+      const clickedTile = e.target;
+      if (!firstTile) {
+        firstTile = clickedTile;
+        clickedTile.style.outline = '2px solid white';
+      } else if (clickedTile !== firstTile) {
+        firstTile.style.outline = '';
+        swapTiles(firstTile, clickedTile);
+        firstTile = null;
+        moves--;
+        updateHUD();
+        checkMatches();
+        if (moves <= 0) {
+          setTimeout(() => alert('Игра окончена! Ваш счёт: ' + score), 300);
+        }
+      }
+    }
+
+    function swapTiles(t1, t2) {
+      const temp = t1.textContent;
+      t1.textContent = t2.textContent;
+      t2.textContent = temp;
+    }
+
+    function checkMatches() {
+      const toRemove = new Set();
+
+      for (let row = 0; row < gameSize; row++) {
+        for (let col = 0; col < gameSize - 2; col++) {
+          const i = row * gameSize + col;
+          if (tiles[i].textContent === tiles[i + 1].textContent && tiles[i].textContent === tiles[i + 2].textContent) {
+            toRemove.add(i);
+            toRemove.add(i + 1);
+            toRemove.add(i + 2);
+          }
+        }
+      }
+
+      for (let col = 0; col < gameSize; col++) {
+        for (let row = 0; row < gameSize - 2; row++) {
+          const i = row * gameSize + col;
+          if (tiles[i].textContent === tiles[i + gameSize].textContent && tiles[i].textContent === tiles[i + 2 * gameSize].textContent) {
+            toRemove.add(i);
+            toRemove.add(i + gameSize);
+            toRemove.add(i + 2 * gameSize);
+          }
+        }
+      }
+
+      toRemove.forEach(i => {
+        tiles[i].classList.add('matched');
+        setTimeout(() => {
+          tiles[i].textContent = getRandomTile();
+          tiles[i].classList.remove('matched');
+        }, 300);
+        score += 10;
+      });
+
+      updateHUD();
+    }
+
+    function restartGame() {
+      document.getElementById('game-screen').classList.remove('active');
+      document.getElementById('start-screen').classList.add('active');
+    }
+  </script></body>
+</html>
