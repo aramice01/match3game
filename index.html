@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Match-3 с аккаунтом и магазином</title>
+<title>Match-3 с регистрацией и выбором аватара</title>
 <style>
-  /* Основные стили */
   body {
     margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background: #34495e; color: white;
@@ -46,17 +45,16 @@
     background-color: #2ecc71;
   }
 
-  #avatar-selection img, .shop-avatar {
+  #avatar-selection img {
     width: 80px; margin: 10px; cursor: pointer;
     border-radius: 50%;
     border: 3px solid transparent;
     transition: border-color 0.3s;
   }
-  #avatar-selection img.selected, .shop-avatar.selected {
+  #avatar-selection img.selected {
     border-color: #f1c40f;
   }
 
-  /* Навигация меню */
   nav {
     display: flex;
     gap: 15px;
@@ -69,7 +67,6 @@
     background-color: #3498db;
   }
 
-  /* Игровое поле */
   #game {
     display: grid;
     grid-template-columns: repeat(8, 50px);
@@ -98,7 +95,6 @@
     box-shadow: 0 0 10px 3px #f1c40f;
   }
 
-  /* HUD */
   #hud {
     margin: 15px 0;
     font-size: 18px;
@@ -117,7 +113,6 @@
     100% { transform: rotate(5deg); }
   }
 
-  /* Монеты */
   #coins-container {
     display: flex; align-items: center; gap: 8px;
     font-size: 22px;
@@ -136,7 +131,6 @@
     50% { transform: scale(1.2); }
   }
 
-  /* Магазин */
   .shop-items {
     display: flex;
     flex-wrap: wrap;
@@ -175,7 +169,6 @@
     background-color: #d35400;
   }
 
-  /* Аккаунт */
   #account-info {
     display: flex;
     flex-direction: column;
@@ -193,7 +186,6 @@
     font-weight: bold;
   }
 
-  /* Настройки */
   #settings label {
     display: flex;
     align-items: center;
@@ -206,7 +198,6 @@
     cursor: pointer;
   }
 
-  /* Анимация изменения ника */
   .nickname.animated {
     animation: glowText 3s infinite alternate;
   }
@@ -219,9 +210,7 @@
 </head>
 <body>
 
-<!-- Экраны -->
-
-<!-- Регистрация / Вход -->
+<!-- Экран входа/регистрации -->
 <div id="login-screen" class="screen active">
   <h1>Вход / Регистрация</h1>
   <div id="avatar-selection">
@@ -260,6 +249,3 @@
       <div id="coins-icon"></div><div id="coins-count-game">0</div>
     </div>
   </div>
-  <div id="game"></div>
-  <button id="btn-restart">Заново</button>
-  <button id
